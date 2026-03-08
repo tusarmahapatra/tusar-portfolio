@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tusar_OS_v98.sys</title>
+    <style>
+        :root {
+            --win-grey: #c0c0c0;
+            --win-blue: #000080;
+            --win-teal: #008080;
+            --win-border-light: #ffffff;
+            --win-border-dark: #808080;
+            --win-black: #000000;
+        }
+
+        body {
+            background-color: var(--win-teal);
+            font-family: "MS Sans Serif", "Tahoma", sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Desktop Layout */
+        .desktop {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 85px);
+            grid-auto-rows: 95px;
+            gap: 15px;
+            height: calc(100vh - 35px);
+        }
+
+        .icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            color: white;
+            font-size: 11px;
+            text-shadow: 1px 1px black;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .icon:hover { background: rgba(0, 0, 128, 0.4); outline: 1px dotted #fff; }
+        .icon-symbol { font-size: 30px; margin-bottom: 5px; }
+
+        /* Window Styling */
+        .window {
+            position: absolute;
+            background: var(--win-grey);
+            border: 2px solid;
+            border-color: var(--win-border-light) var(--win-border-dark) var(--win-border-dark) var(--win-border-light);
+            box-shadow: 1px 1px 0 0 var(--win-black);
+            min-width: 350px;
+            display: none;
+            z-index: 10;
+        }
+
+        .title-bar {
+            background: linear-gradient(90deg, var(--win-blue), #1084d0);
+            padding: 3px 5px;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: move;
+        }
+
+        .title-bar-btns button {
+            width: 16px;
+            height: 14px;
+            font-size: 9px;
+            background: var(--win-grey);
+            border: 1px solid;
+            border-color: var(--win-border-light) var(--win-border-dark) var(--win-border-dark) var(--win-border-light);
+            cursor: pointer;
+            line-height: 10px;
+        }
+
+        .content-area {
+            margin: 3px;
+            padding: 15px;
+            background: #fff;
+            border: 2px inset var(--win-grey);
+            color: #000;
+            font-size: 13px;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+
+        /* Specific Component Styling */
+        .start-menu {
+            position: fixed;
+            bottom: 30px;
+            left: 2px;
+            width: 200px;
+            background: var(--win-grey);
+            border: 2px solid;
+            border-color: var(--win-border-light) var(--win-border-dark) var(--win-border-dark) var(--win-border-light);
+            display: none;
+            z-index: 2000;
+        }
+
+        .start-item { padding: 8px 10px; font-size: 12px; display: flex; align-items: center; gap: 10px; }
+        .start-item:hover { background: var(--win-blue); color: #fff; }
+
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 28px;
+            background: var(--win-grey);
+            border-top: 2px solid var(--win-border-light);
+            display: flex;
+            align-items: center;
+            padding: 2px;
+            z-index: 1000;
+        }
+
+        .btn-start {
+            font-weight: bold;
+            padding: 2px 8px;
+            border: 2px solid;
+            border-color: var(--win-border-light) var(--win-border-dark) var(--win-border-dark) var(--win-border-light);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .btn-start:active { border-color: var(--win-border-dark) var(--win-border-light) var(--win-border-light) var(--win-border-dark); }
+        
+        .clock {
+            margin-left: auto;
+            border: 2px inset var(--win-grey);
+            padding: 2px 8px;
+            font-size: 11px;
+        }
+
+        ul { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        hr { border: 0; border-top: 1px solid #888; margin: 10px 0; }
+    </style>
+</head>
+<body>
+
+    <div class="desktop">
+        <div class="icon" onclick="toggleWin('win-me')">
+            <div class="icon-symbol">👤</div>
+            <span>About_Me.txt</span>
+        </div>
+        <div class="icon" onclick="toggleWin('win-exp')">
+            <div class="icon-symbol">📂</div>
+            <span>Experience.exe</span>
+        </div>
+        <div class="icon" onclick="toggleWin('win-skills')">
+            <div class="icon-symbol">⚙️</div>
+            <span>Sys_Specs.dll</span>
+        </div>
+        <div class="icon" onclick="toggleWin('win-projects')">
+            <div class="icon-symbol">💡</div>
+            <span>Projects.bat</span>
+        </div>
+        <div class="icon" onclick="window.location.href='mailto:tusar.mahapatra@gmail.com'">
+            <div class="icon-symbol">📧</div>
+            <span>Mail.exe</span>
+        </div>
+    </div>
+
+    <div id="win-me" class="window" style="top: 10%; left: 10%; width: 420px;">
+        <div class="title-bar"><span>About_Me.txt - Notepad</span><div class="title-bar-btns"><button onclick="toggleWin('win-me')">X</button></div></div>
+        <div class="content-area">
+            <h3>Tusar Ranjan Mahapatra</h3>
+            <p><strong>Senior Software Engineer</strong> [cite: 16, 90]</p>
+            <p>3.5+ years of experience designing and scaling enterprise-grade backend systems on Microsoft Azure.</p>
+            <p>Specialized in high-performance financial data platforms and cloud-native microservices[cite: 95].</p>
+            <hr>
+            <p><strong>Education:</strong> B.Tech in Computer Science, KIIT University (CGPA: 9.4)[cite: 134, 135, 136].</p>
+        </div>
+    </div>
+
+    <div id="win-exp" class="window" style="top: 15%; left: 20%; width: 500px;">
+        <div class="title-bar"><span>Experience.exe</span><div class="title-bar-btns"><button onclick="toggleWin('win-exp')">X</button></div></div>
+        <div class="content-area">
+            <strong>Providence Global Center (Senior SDE)</strong> [cite: 104, 105]
+            <p><em>Apr 2024 - Present</em> [cite: 106]</p>
+            <ul>
+                <li>Led backend architecture for Finance Data Reporting & Forecasting platforms[cite: 107].</li>
+                <li>Built simulation engine reducing planning cycle time by 40%[cite: 108].</li>
+                <li>Reduced report latency by 30% via SQL optimization[cite: 109].</li>
+            </ul>
+            <hr>
+            <strong>Providence Global Center (SDE 1)</strong> [cite: 113, 115]
+            <p><em>Jul 2022 - Apr 2024</em> [cite: 114]</p>
+            <ul>
+                <li>Developed CV+NLP diagnostics platform for blood smear analysis (Patent Evaluation)[cite: 117, 118].</li>
+                <li>Implemented automated API unit testing using xUnit[cite: 116].</li>
+                <li>Managed ML pipelines for high availability[cite: 119].</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="win-skills" class="window" style="top: 20%; left: 30%; width: 380px;">
+        <div class="title-bar"><span>Sys_Specs.dll - Configuration</span><div class="title-bar-btns"><button onclick="toggleWin('win-skills')">X</button></div></div>
+        <div class="content-area">
+            <strong>Programming Languages:</strong> [cite: 97, 98]
+            <p>.NET, C#, Python, SQL, NodeJS, ReactJS, AngularJS</p>
+            <hr>
+            <strong>Cloud & DevOps:</strong> [cite: 99]
+            <p>Azure, AWS, Azure Databricks</p>
+            <hr>
+            <strong>Specializations:</strong> [cite: 8, 100, 101]
+            <p>Distributed Systems, MCP, NLP, LLM, MLOps, UX Design</p>
+        </div>
+    </div>
+
+    <div id="win-projects" class="window" style="top: 25%; left: 40%; width: 450px;">
+        <div class="title-bar"><span>Projects.bat</span><div class="title-bar-btns"><button onclick="toggleWin('win-projects')">X</button></div></div>
+        <div class="content-area">
+            <strong>AI Chatbot Infrastructure (MCP)</strong> [cite: 110]
+            <p>Architected a scalable backend MCP server framework in Python for AI capabilities in MS Teams[cite: 110].</p>
+            <hr>
+            <strong>Incident Intelligence Platform</strong> [cite: 124]
+            <p>Built ML-driven system reducing resolution time from 2-3 hours to ~35 minutes[cite: 125].</p>
+            <hr>
+            <strong>B2B Fintech Platform</strong> [cite: 130]
+            <p>Optimized REST APIs and SQL queries improving response times by 20%[cite: 131].</p>
+        </div>
+    </div>
+
+    <div class="taskbar">
+        <div class="btn-start" onclick="toggleStart()">Start</div>
+        <div class="clock" id="clock">12:00 PM</div>
+    </div>
+
+    <div class="start-menu" id="start-menu">
+        <div class="start-item">📂 Programs</div>
+        <div class="start-item">📑 Documents</div>
+        <div class="start-item">🔍 Find</div>
+        <hr>
+        <div class="start-item" onclick="location.reload()">🔒 Restart System</div>
+    </div>
+
+    <script>
+        function toggleWin(id) {
+            const win = document.getElementById(id);
+            win.style.display = (win.style.display === 'block') ? 'none' : 'block';
+            if(win.style.display === 'block') win.style.zIndex = Math.floor(Date.now()/1000);
+        }
+
+        function toggleStart() {
+            const menu = document.getElementById('start-menu');
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        }
+
+        // Draggable windows
+        document.querySelectorAll('.title-bar').forEach(bar => {
+            bar.onmousedown = function(e) {
+                let win = bar.closest('.window');
+                win.style.zIndex = Math.floor(Date.now()/1000);
+                let shiftX = e.clientX - win.getBoundingClientRect().left;
+                let shiftY = e.clientY - win.getBoundingClientRect().top;
+                function moveAt(pageX, pageY) {
+                    win.style.left = pageX - shiftX + 'px';
+                    win.style.top = pageY - shiftY + 'px';
+                }
+                function onMouseMove(e) { moveAt(e.pageX, e.pageY); }
+                document.addEventListener('mousemove', onMouseMove);
+                document.onmouseup = function() {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.onmouseup = null;
+                };
+            };
+        });
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html>

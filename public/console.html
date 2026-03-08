@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tusar_Architect_Console_v3.5</title>
+    <style>
+        body { 
+            background: #050505; 
+            color: #00ff41; 
+            font-family: 'Courier New', Courier, monospace; 
+            padding: 20px; 
+            line-height: 1.4;
+            overflow-x: hidden;
+        }
+        #console {
+            height: 92vh;
+            overflow-y: auto;
+            padding-bottom: 50px;
+        }
+        .prompt { color: #ff00ff; font-weight: bold; }
+        .input-line { display: flex; align-items: center; }
+        #user-input {
+            background: transparent;
+            border: none;
+            color: #00ff41;
+            font-family: inherit;
+            font-size: inherit;
+            outline: none;
+            width: 100%;
+            caret-color: #00ff41;
+        }
+        .output { margin: 5px 0 15px 0; color: #00ccff; white-space: pre-wrap; }
+        .cmd-list { color: #f1c40f; }
+        
+        /* Scanline effect */
+        .scanline {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: rgba(0, 255, 65, 0.05);
+            opacity: 0.5;
+            z-index: 10;
+            pointer-events: none;
+            animation: scan 4s linear infinite;
+        }
+        @keyframes scan { from { top: 0; } to { top: 100%; } }
+
+        /* Scrollbar styling for that retro look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #004411; }
+    </style>
+</head>
+<body>
+    <div class="scanline"></div>
+    <div id="console">
+        <div class="header">
+            [SYSTEM INI] TUSAR RANJAN MAHAPATRA ARCHITECT CONSOLE<br>
+            [STATUS] CONNECTION SECURE... KERNEL V3.5.0 LOADED.<br>
+            -----------------------------------------------------------<br>
+            Welcome, System Architect. <br>
+            Type <span class="cmd-list">'help'</span> to see all available system commands.
+        </div>
+        <div id="history"></div>
+        <div class="input-line">
+            <span class="prompt">tusar@architect:~$</span>&nbsp;
+            <input type="text" id="user-input" autofocus autocomplete="off" spellcheck="false">
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById('user-input');
+        const history = document.getElementById('history');
+        const consoleDiv = document.getElementById('console');
+
+        // Force focus on input whenever the user clicks anywhere
+        document.addEventListener('click', () => {
+            input.focus();
+        });
+
+        const commands = {
+            'help': "AVAILABLE COMMANDS:\n" +
+                    "  ls           - List all project directories\n" +
+                    "  whoami       - Display current system profile\n" +
+                    "  metrics      - Display performance optimization logs\n" +
+                    "  cat [file]   - Read content of a specific project\n" +
+                    "  clear        - Clear the terminal screen",
+            
+            'ls': "PROV_FINANCE_DATA/  (Senior SDE)\n" +
+                  "AI_MCP_FRAMEWORK/   (Python/Teams)\n" +
+                  "MED_DIAGNOSTICS/    (Patent Pending)\n" +
+                  "INCIDENT_INTEL/     (ML Automation)",
+
+            'whoami': "NAME: Tusar Ranjan Mahapatra\n" +
+                      "ROLE: Senior Software Engineer\n" +
+                      "SKILLS: .NET, C#, Python, SQL, Azure, AI/ML Infrastructure, UX Design\n" +
+                      "ACADEMIC: KIIT University, B.Tech CSE (9.4 CGPA)",
+
+            'metrics': "[METRIC] 40% reduction in planning cycle time\n" +
+                       "[METRIC] 30% reduction in report latency via SQL tuning\n" +
+                       "[METRIC] Incident resolution: 180m -> 35m automated\n" +
+                       "[METRIC] API response time improvement: 20%",
+
+            'cat': "Usage: cat [FILENAME]. Try 'cat PROV_FINANCE_DATA'.",
+
+            // We use uppercase keys here for the mapping logic
+            'PROV_FINANCE_DATA': "PROJECT: Enterprise Finance Data Reporting\n" +
+                                 "IMPACT: Led backend architecture for executive forecasting platform.\n" +
+                                 "TECH: .NET, SQL Server, Azure Pipelines, PowerBI",
+
+            'AI_MCP_FRAMEWORK': "PROJECT: Scalable Backend MCP Server\n" +
+                                "IMPACT: Enabled AI capabilities for Microsoft Teams workflows via Python.\n" +
+                                "TECH: Python, Model Context Protocol, LLM Integrations",
+
+            'MED_DIAGNOSTICS': "PROJECT: Blood Smear Analysis Diagnostics\n" +
+                               "INNOVATION: CV+NLP platform for disease prediction.\n" +
+                               "STATUS: Currently under patent evaluation.",
+
+            'INCIDENT_INTEL': "PROJECT: ServiceNow Incident Analysis Platform\n" +
+                              "IMPACT: Automated classification and trend forecasting using NLP.\n" +
+                              "RESULT: Reduced resolution time from ~3 hours to 35 minutes."
+        };
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const fullInput = input.value.trim();
+                const parts = fullInput.split(' ');
+                const cmd = parts[0].toLowerCase();
+                const args = parts.slice(1).join('_').toUpperCase(); // Normalizing for our object keys
+                
+                // 1. Add command to history
+                const line = document.createElement('div');
+                line.innerHTML = `<span class="prompt">tusar@architect:~$</span> ${fullInput}`;
+                history.appendChild(line);
+
+                // 2. Process output
+                const output = document.createElement('div');
+                output.className = 'output';
+
+                if (cmd === 'clear') {
+                    history.innerHTML = '';
+                } else if (cmd === 'help' || cmd === 'ls' || cmd === 'whoami' || cmd === 'metrics') {
+                    output.innerText = commands[cmd];
+                } else if (cmd === 'cat') {
+                    if (!args) {
+                        output.innerText = commands['cat'];
+                    } else if (commands[args]) {
+                        output.innerText = commands[args];
+                    } else {
+                        output.innerText = `Error: File '${args}' not found.`;
+                    }
+                } else if (fullInput !== "") {
+                    output.innerText = `Command '${cmd}' not found. Type 'help' for options.`;
+                }
+
+                if (fullInput !== "" && cmd !== 'clear') {
+                    history.appendChild(output);
+                }
+
+                // 3. Reset and Scroll
+                input.value = '';
+                consoleDiv.scrollTop = consoleDiv.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>

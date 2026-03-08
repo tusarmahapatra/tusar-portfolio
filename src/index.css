@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  /* Scroll Snapping Logic */
+  scroll-snap-type: y proximity;
+}
+
+/* Accessibility: Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+    scroll-snap-type: none;
+  }
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  @apply bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100;
+}
+
+/* Make every section a snap target */
+section {
+  scroll-snap-align: start;
+}
+
+/* Custom selection branding */
+::selection {
+  @apply bg-blue-500/30 text-blue-900 dark:bg-blue-500/40 dark:text-white;
+}
+
+/* Typography polish */
+h1, h2, h3 {
+  letter-spacing: -0.025em;
+}
+
+/* Clean Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 dark:bg-slate-800 rounded-full;
+}

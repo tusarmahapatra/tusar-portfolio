@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visual Studio Code - Tusar Ranjan Mahapatra Portfolio</title>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/editor/editor.main.min.css">
+    <style>
+        :root {
+            --vscode-bg: #1e1e1e; --activity-bg: #333333; --sidebar-bg: #252526;
+            --terminal-bg: #1e1e1e; --border: #3c3c3c; --accent: #007acc;
+            --text-dim: #969696; --text-main: #cccccc; --error: #f48771; --success: #89d185;
+        }
+        body, html { margin: 0; padding: 0; height: 100%; background: var(--vscode-bg); color: var(--text-main); font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+        
+        .window { display: flex; flex-direction: column; height: 100vh; }
+        .main-container { display: flex; flex: 1; overflow: hidden; position: relative; }
+
+        /* Activity Bar */
+        .activity-bar { width: 50px; background: var(--activity-bg); display: flex; flex-direction: column; align-items: center; padding-top: 15px; gap: 25px; z-index: 10; border-right: 1px solid black; }
+        .icon { font-size: 22px; opacity: 0.5; cursor: pointer; transition: 0.2s; }
+        .icon:hover { opacity: 1; }
+
+        /* Sidebar Explorer */
+        .sidebar { width: 220px; min-width: 150px; background: var(--sidebar-bg); border-right: 1px solid var(--border); overflow: hidden; }
+        .sidebar-header { padding: 10px 20px; font-size: 11px; font-weight: bold; color: var(--text-dim); text-transform: uppercase; }
+        .file-item { padding: 6px 20px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; color: var(--text-dim); }
+        .file-item:hover { background: #2a2d2e; }
+        .file-item.active { background: #37373d; color: white; border-left: 2px solid var(--accent); }
+
+        /* Resizers */
+        .resizer-h { width: 4px; cursor: col-resize; background: transparent; transition: background 0.2s; z-index: 100; }
+        .resizer-h:hover, .resizing-h { background: var(--accent) !important; }
+        .resizer-v { height: 4px; cursor: row-resize; background: var(--border); z-index: 100; }
+        .resizer-v:hover { background: var(--accent); }
+
+        /* Editor Area */
+        .editor-group { flex: 1; display: flex; flex-direction: column; min-width: 0; position: relative; }
+        .tabs-container { height: 35px; background: #252526; display: flex; border-bottom: 1px solid var(--border); align-items: center; }
+        .tab { padding: 0 15px; height: 100%; display: flex; align-items: center; font-size: 12px; gap: 8px; color: var(--text-dim); background: #2d2d2d; border-right: 1px solid var(--border); }
+        .tab.active { background: var(--vscode-bg); color: white; border-top: 1px solid var(--accent); }
+
+        #stage { flex: 1; display: flex; min-height: 0; overflow: hidden; }
+        #monaco-container { flex: 1; min-width: 100px; }
+        
+        /* Markdown Preview Pane */
+        #md-preview { 
+            width: 0px; background: white; color: #24292e; 
+            padding: 0; overflow-y: auto; display: none; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+        }
+        .preview-active #md-preview { width: 50%; padding: 40px; display: block; border-left: 1px solid var(--border); }
+        
+        /* Markdown Styling inside Preview */
+        #md-preview h1 { border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; margin-top: 0; }
+        #md-preview h2 { border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; font-size: 1.5em; margin-top: 24px; }
+        #md-preview h3 { font-size: 1.25em; margin-top: 24px; color: #444; }
+        #md-preview hr { height: 0.25em; background-color: #e1e4e8; border: 0; margin: 24px 0; }
+        #md-preview ul { padding-left: 2em; }
+        #md-preview li { margin-bottom: 4px; }
+
+        /* Terminal Panel */
+        .terminal-panel { height: 150px; min-height: 35px; background: var(--terminal-bg); border-top: 1px solid var(--border); display: flex; flex-direction: column; }
+        #console { flex: 1; padding: 10px 20px; font-family: 'Consolas', 'Courier New', monospace; font-size: 12px; overflow-y: auto; white-space: pre-wrap; color: #d4d4d4; }
+
+        /* Controls */
+        .controls { position: absolute; right: 15px; top: 5px; display: flex; gap: 10px; align-items: center; z-index: 1000; }
+        .btn-ui { background: #3c3c3c; color: white; border: none; padding: 2px 10px; font-size: 11px; cursor: pointer; border-radius: 2px; }
+        .btn-ui:hover { background: #4c4c4c; }
+        .run-btn { color: var(--success); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="window">
+    <div class="main-container">
+        <div class="activity-bar">
+            <div class="icon">📄</div><div class="icon">🔍</div><div class="icon">🌿</div><div class="icon">⚙️</div>
+        </div>
+
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">Explorer</div>
+            <div id="file-main.py" class="file-item active" onclick="openFile('main.py')">🐍 main.py</div>
+            <div id="file-resume.md" class="file-item" onclick="openFile('resume.md')">📑 resume.md</div>
+        </div>
+
+        <div class="resizer-h" id="resizer-sidebar"></div>
+
+        <div class="editor-group">
+            <div class="tabs-container">
+                <div class="tab active" id="tab-title">🐍 main.py</div>
+                <div class="controls">
+                    <button class="btn-ui" id="preview-btn" style="display:none" onclick="togglePreview()">Preview: OFF</button>
+                    <button class="btn-ui run-btn" id="run-btn" onclick="runPython()">▶ Run</button>
+                </div>
+            </div>
+            
+            <div id="stage">
+                <div id="monaco-container"></div>
+                <div class="resizer-h" id="resizer-preview" style="display:none"></div>
+                <div id="md-preview"></div>
+            </div>
+
+            <div class="resizer-v" id="resizer-terminal"></div>
+            <div class="terminal-panel" id="terminal">
+                <div id="console">PS C:\Users\Tusar> Initializing Python environment...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+<script>
+    let pyodide, editor, isPreviewActive = false;
+    
+    // Exact Replica Content from Tusar-Ranjan-Mahapatra.pdf
+    const files = {
+        'main.py': {
+            lang: 'python',
+            content: `class TusarMahapatra:\n    def __init__(self):\n        self.title = "Senior Software Engineer"\n        self.exp = 3.5\n        self.cgpa = 9.4\n\n    def get_achievements(self):\n        return {\n            "Planning Cycle Reduction": "40%",\n            "SQL Latency Reduction": "30%",\n            "Status": "Senior SDE @ Providence Global Center"\n        }\n\nprofile = TusarMahapatra()\nprint(f"--- {profile.title} Profile ---")\nfor k, v in profile.get_achievements().items():\n    print(f"{k}: {v}")`
+        },
+        'resume.md': {
+            lang: 'markdown',
+            content: `# TUSAR RANJAN MAHAPATRA\n[Github](https://github.com/tusarmahapatra) | [LinkedIn](https://www.linkedin.com/in/tusar-ranjan-mahapatra/)\n\n## PROFESSIONAL SUMMARY\nSenior Software Engineer with **3.5+ years** of experience designing and scaling enterprise-grade backend systems on Microsoft Azure[cite: 5]. Specialized in high-performance financial data platforms, optimizing SQL-intensive workloads, and developing cloud-native microservices [cite: 6].\n\n---\n\n## TECHNICAL SKILLS\n* **Programming:** .NET, C#, Python, SQL, AngularJS, ReactJS, NodeJS [cite: 9]\n* **DevOps & Cloud:** Azure, AWS [cite: 10]\n* **AI/ML:** Model Context Protocol (MCP), NLP, LLM, MLOps [cite: 11]\n* **UI/UX:** UX Design, UX Lifecycle, Figma [cite: 12, 13]\n\n---\n\n## PROFESSIONAL EXPERIENCE\n\n### SENIOR SOFTWARE ENGINEER | PROVIDENCE GLOBAL CENTER\n*APR '24 - PRESENT*\n* Led architecture for enterprise Finance Data Reporting and Forecasting platform [cite: 18].\n* Built a financial data simulation engine reducing planning cycle time by **40%** .\n* Optimized SQL Server stored procedures/indexing, reducing report latency by **30%** .\n* Architected scalable backend **MCP server framework** in Python for AI Teams workflows[cite: 21].\n\n### SOFTWARE ENGINEER 1 | PROVIDENCE GLOBAL CENTER\n*JUL '22 - APR '24*\n* Developed a **CV+NLP-based diagnostics platform** for disease prediction using React and Python (under patent evaluation) [cite: 28, 29].\n* Implemented automated backend API unit testing using xUnit [cite: 27].\n* Deployed and monitored ML pipelines ensuring high availability[cite: 30].\n\n### SOFTWARE ENGINEERING INTERN | PROVIDENCE GLOBAL CENTER\n*JAN '22 - JUN '22*\n* Built NLP/ML platform that reduced incident resolution time from 2-3 hours to **~35 minutes**[cite: 35, 36].\n\n---\n\n## EDUCATION\n**B.Tech in Computer Science and Engineering**\nKIIT University, Bhubaneswar | **CGPA: 9.4** [cite: 45, 46, 47]`
+        }
+    };
+
+    let currentFile = 'main.py';
+
+    require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
+    require(['vs/editor/editor.main'], function() {
+        editor = monaco.editor.create(document.getElementById('monaco-container'), {
+            value: files['main.py'].content,
+            language: 'python',
+            theme: 'vs-dark',
+            automaticLayout: true
+        });
+        editor.onDidChangeModelContent(() => { if(currentFile === 'resume.md' && isPreviewActive) renderMarkdown(); });
+    });
+
+    async function initPyodide() {
+        pyodide = await loadPyodide({ stdout: (t) => { document.getElementById('console').innerHTML += t + "\n"; }});
+        document.getElementById('console').innerHTML += "Python 3.11 Kernel Ready.\n";
+    }
+    initPyodide();
+
+    function openFile(fileName) {
+        files[currentFile].content = editor.getValue();
+        currentFile = fileName;
+        monaco.editor.setModelLanguage(editor.getModel(), files[fileName].lang);
+        editor.setValue(files[fileName].content);
+        
+        document.querySelectorAll('.file-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(`file-${fileName}`).classList.add('active');
+        document.getElementById('tab-title').innerText = (fileName === 'main.py' ? '🐍 ' : '📑 ') + fileName;
+        
+        document.getElementById('run-btn').style.display = (fileName === 'main.py') ? 'block' : 'none';
+        document.getElementById('preview-btn').style.display = (fileName === 'resume.md') ? 'block' : 'none';
+    }
+
+    function togglePreview() {
+        isPreviewActive = !isPreviewActive;
+        const stage = document.body;
+        const resizerPre = document.getElementById('resizer-preview');
+        const previewPane = document.getElementById('md-preview');
+        
+        stage.classList.toggle('preview-active', isPreviewActive);
+        resizerPre.style.display = isPreviewActive ? 'block' : 'none';
+        document.getElementById('preview-btn').innerText = isPreviewActive ? "Preview: ON" : "Preview: OFF";
+        
+        if (isPreviewActive) renderMarkdown();
+        if (editor) editor.layout();
+    }
+
+    function renderMarkdown() {
+        document.getElementById('md-preview').innerHTML = marked.parse(editor.getValue());
+    }
+
+    async function runPython() {
+        const con = document.getElementById('console');
+        con.innerHTML = "PS C:\\Users\\Tusar> python main.py\n";
+        try { await pyodide.runPythonAsync(editor.getValue()); }
+        catch (err) { con.innerHTML += `<span style="color:var(--error)">${err}</span>`; }
+    }
+
+    // --- Resizing Engine ---
+    function setupResizer(resizerId, targetId, type) {
+        const resizer = document.getElementById(resizerId);
+        const target = document.getElementById(targetId);
+        
+        resizer.addEventListener('mousedown', (e) => {
+            resizer.classList.add('resizing-' + type);
+            const onMouseMove = (ev) => {
+                if (type === 'h') {
+                    if (resizerId === 'resizer-preview') {
+                        let width = window.innerWidth - ev.clientX;
+                        target.style.width = Math.max(200, width) + 'px';
+                    } else {
+                        target.style.width = Math.max(100, ev.clientX - target.offsetLeft) + 'px';
+                    }
+                } else {
+                    let height = window.innerHeight - ev.clientY;
+                    target.style.height = Math.max(35, height) + 'px';
+                }
+                if (editor) editor.layout();
+            };
+            const onMouseUp = () => {
+                resizer.classList.remove('resizing-' + type);
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            };
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+    }
+
+    setupResizer('resizer-sidebar', 'sidebar', 'h');
+    setupResizer('resizer-preview', 'md-preview', 'h');
+    setupResizer('resizer-terminal', 'terminal', 'v');
+</script>
+</body>
+</html>
