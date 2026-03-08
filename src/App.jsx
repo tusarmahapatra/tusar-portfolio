@@ -60,9 +60,9 @@ const App = () => {
           
           <div className="flex items-center gap-3">
             <div className="hidden lg:flex items-center bg-slate-100 dark:bg-slate-900 rounded-full p-1 border border-slate-200 dark:border-slate-800">
-              <a href="/retro.html" target="_blank" className="p-2 hover:bg-white dark:hover:bg-slate-800 rounded-full transition-all text-slate-500 hover:text-indigo-600" title="Retro Mode"><Monitor size={18} /></a>
-              <a href="/editor.html" target="_blank" className="p-2 hover:bg-white dark:hover:bg-slate-800 rounded-full transition-all text-slate-500 hover:text-indigo-600" title="IDE Mode"><Code2 size={18} /></a>
-              <a href="/console.html" target="_blank" className="p-2 hover:bg-white dark:hover:bg-slate-800 rounded-full transition-all text-slate-500 hover:text-indigo-600" title="System Console"><Terminal size={18} /></a>
+              <a href="/tusar-portfolio/retro.html" target="_blank" className="p-2 hover:bg-white dark:hover:bg-slate-800 rounded-full transition-all text-slate-500 hover:text-indigo-600" title="Retro Mode"><Monitor size={18} /></a>
+              <a href="/tusar-portfolio/editor.html" target="_blank" className="p-2 hover:bg-white dark:hover:bg-slate-800 rounded-full transition-all text-slate-500 hover:text-indigo-600" title="IDE Mode"><Code2 size={18} /></a>
+              <a href="/tusar-portfolio/console.html" target="_blank" className="p-2 hover:bg-white dark:hover:bg-slate-800 rounded-full transition-all text-slate-500 hover:text-indigo-600" title="System Console"><Terminal size={18} /></a>
             </div>
 
             <button onClick={() => setIsDark(!isDark)} className="p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-300 hover:ring-2 ring-indigo-500 transition-all">
@@ -71,7 +71,7 @@ const App = () => {
 
             {/* DOWNLOAD CTA */}
             <a 
-              href="/Tusar-Ranjan-Mahapatra.pdf" 
+              href="/tusar-portfolio/Tusar-Ranjan-Mahapatra.pdf" 
               download 
               className="bg-slate-900 dark:bg-indigo-500 text-white px-5 py-2 rounded-full text-xs font-bold hover:bg-indigo-600 dark:hover:bg-indigo-400 transition-all shadow-sm flex items-center gap-2"
             >
@@ -84,7 +84,7 @@ const App = () => {
 
       {/* Hero Section */}
       <section className="relative min-h-screen w-full overflow-hidden bg-slate-50 dark:bg-slate-950 flex items-center">
-        <div className="absolute inset-0 z-0" style={{ backgroundImage: `url('/profile.png')`, backgroundSize: 'cover', backgroundPosition: 'right 20%' }}>
+        <div className="absolute inset-0 z-0" style={{ backgroundImage: `url('/tusar-portfolio/profile.png')`, backgroundSize: 'cover', backgroundPosition: 'right 20%' }}>
           <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-slate-50/10 to-transparent dark:from-slate-950 dark:via-slate-950/20 dark:to-transparent"></div>
         </div>
 
