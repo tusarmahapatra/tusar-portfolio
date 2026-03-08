@@ -12,7 +12,7 @@ const App = () => {
   const [loopIndex, setLoopIndex] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
 
-  const titles = ["High-Scale Backend Systems", "Intelligent Data Platforms", "AI-Driven Infrastructure"];
+  const titles = ["High-Scale Backend Systems", "Intelligent Finance Platforms", "AI-Driven Infrastructure"];
 
   useEffect(() => {
     const handleTyping = () => {
@@ -120,7 +120,7 @@ const App = () => {
             </h1>
 
             <p className="text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl font-medium">
-              Specializing in high-performance cloud systems and AI infrastructure. Currently architecting 
+              Specializing in high-performance cloud systems and AI infrastructure. Currently developing 
               simulation engines that transform complex financial data into actionable enterprise intelligence.
             </p>
 
@@ -154,32 +154,38 @@ const App = () => {
 
       {/* Experience Section */}
       <section className="max-w-7xl mx-auto px-8 py-32 bg-slate-50/50 dark:bg-slate-900/20 rounded-[3rem]">
-        <h2 className="text-4xl font-black mb-16 text-slate-900 dark:text-white">Selected Work</h2>
+        <h2 className="text-4xl font-black mb-16 text-slate-900 dark:text-white">Professional Journey</h2>
         <div className="space-y-32">
           <WorkStory 
             role="Senior Software Engineer" 
-            company="Providence" 
-            period="2024 – Present"
-            story="Leading the backend evolution for an enterprise-wide Financial Forecasting platform. Developed a simulation engine that cut planning cycles by 40%, allowing leadership to pivot strategies with data-driven confidence."
-            tags={[".NET Core", "Azure", "Python", "SQL Tuning", "MCP"]}
+            company="Providence India" 
+            period="Apr 2024 – Present"
+            story="Leading backend architecture for an enterprise Finance Data Reporting platform. I built a financial data simulation engine that reduced planning cycle time by 40% and optimized SQL Server performance to cut report latency by 30%. Architected and developed a scalable Python-based MCP framework to enable deterministic AI responses via Microsoft Teams."
+            tags={[".NET", "Azure", "Python", "SQL Server", "MCP", "Terraform"]}
           />
           <WorkStory 
-            role="Product Engineer" 
-            company="Medical Diagnostics" 
-            period="2022 – 2024"
-            story="Co-developed a CV+NLP platform for blood smear analysis. Built ML pipelines that process diagnostic data with high availability—a project currently under patent evaluation."
-            tags={["React", "Python", "MLOps", "Azure Databricks"]}
+            role="Software Engineer 1" 
+            company="Providence India" 
+            period="Jul 2022 – Apr 2024"
+            story="Developed a computer vision and NLP-based diagnostic platform for blood smear analysis, currently under patent evaluation. I also implemented automated API unit testing using xUnit to ensure regression safety and integrated SuccessFactors data through Azure Data Factory pipelines."
+            tags={["React", "Python", "MLOps", "Azure Data Factory", "xUnit"]}
           />
           <WorkStory 
-            role="Engineering Intern" 
+            role="Software Engineering Intern" 
+            company="Providence India" 
+            period="Jan 2022 – Jun 2022"
+            story="Architected an ML-driven incident intelligence platform using Python and NLP to automate service incident classification. This system reduced average resolution time from 3 hours to ~35 minutes. I also delivered real-time Power BI dashboards to visualize key incident KPIs."
+            tags={["Python", "NLP", "Machine Learning", "Power BI", "ServiceNow"]}
+          />
+          <WorkStory 
+            role="Engineering & UX Design Intern" 
             company="HighRadius" 
-            period="2021 – 2022"
-            story="Optimized B2B fintech platforms for high-volume transactions. Refactored REST APIs and SQL logic to deliver a 20% speed boost to core accounting workflows."
-            tags={["Java", "SQL", "React", "UX Research"]}
+            period="Jan 2021 – Jan 2022"
+            story="Contributed to a B2B Fintech platform using Java and React, incorporating ML-based anomaly detection. I optimized REST APIs and SQL queries to improve response times by 20% and conducted UX research to prototype autonomous accounting workflows."
+            tags={["Java", "SQL", "React", "UX Research", "Fintech"]}
           />
         </div>
       </section>
-
       {/* Skills Section */}
       <section id="skills" className="max-w-7xl mx-auto px-8 py-32">
         <h2 className="text-4xl font-black mb-16 text-slate-900 dark:text-white">Technical Arsenal</h2>
